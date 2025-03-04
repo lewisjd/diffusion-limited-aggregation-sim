@@ -151,4 +151,7 @@ public:
     // but we are being a bit lazy here
     void setWinBackgroundWhite() { glClearColor(1.0, 1.0, 1.0, 1.0); }
     void setWinBackgroundBlack() { glClearColor(0.0, 0.0, 0.0, 0.0); }
+
+    // print the number of number of particles followed by cluster size when user presses 0
+    void printClusterInfo();
 };

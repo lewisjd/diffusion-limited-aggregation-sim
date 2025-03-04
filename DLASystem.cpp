@@ -317,3 +317,9 @@ void DLASystem::DrawSquares() {
 	}
 
 }
+
+// this is called in handleKeyPress when user presses 0 
+void DLASystem::printClusterInfo() {
+	cout << "Number of particles: " << numParticles << endl;
+	cout << "Cluster size (radius): " << clusterRadius << endl;
+}

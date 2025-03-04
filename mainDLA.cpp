@@ -69,6 +69,7 @@ void drawFuncs::introMessage() {
     cout << "  r to clear everything (reset)" << endl;
     cout << "  z to pause and zoom in" << endl;
     cout << "  w or b to change background colour to white or black" << endl;
+    cout << "  0 to print number of particles and cluster radius" << endl;
 }
 
 // openGL function deals with the keyboard
@@ -121,6 +122,9 @@ void drawFuncs::handleKeypress(unsigned char key, int x, int y) {
     case 'u':
         cout << "upd" << endl;
         sys->Update();
+        break;
+    case '0':
+        sys->printClusterInfo();
         break;
     }
     // tell openGL to redraw the window
