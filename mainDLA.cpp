@@ -4,6 +4,7 @@
 #include <vector>
 #include <math.h>
 #include <string>
+#include <ctime>
 
 #include "DLASystem.h"
 #include "Window.h" 
@@ -34,8 +35,8 @@ int main(int argc, char** argv) {
     // create the system
     sys = new DLASystem(win);
 
-    // this is the seed for the random numbers
-    int seed = 6;
+    // this is the seed for the random numbers, generates seed from the system clock
+    int seed = time(0);
     cout << "setting seed " << seed << endl;
     sys->setSeed(seed);
 
