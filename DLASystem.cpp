@@ -209,7 +209,7 @@ void DLASystem::moveLastParticle() {
 			setParticleInactive();  // make the particle inactive (stuck)
 			updateClusterRadius(lastP->pos);  // update the cluster radius, addCircle, etc.
 
-			if (numParticles % 100 == 0 && logfile.is_open()) {
+			if ((numParticles == 10 || numParticles % 100 == 0) && logfile.is_open()) {
 				logfile << numParticles << " " << clusterRadius << endl;
 			}
 		}
