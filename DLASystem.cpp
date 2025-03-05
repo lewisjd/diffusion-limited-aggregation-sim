@@ -260,7 +260,7 @@ DLASystem::DLASystem(Window* set_win) {
 	killRatio = 1.7;   // how much bigger is the killCircle, compared to the addCircle
 
 	// this opens a logfile, if we want to...
-	//logfile.open("opfile.txt");
+	logfile.open("cluster_data.txt");
 }
 
 // destructor
