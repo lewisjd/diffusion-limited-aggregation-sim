@@ -228,13 +228,25 @@ void DLASystem::moveLastParticle() {
 int DLASystem::checkStick() {
 	Particle* lastP = particleList[numParticles - 1];
 	int result = 0;
+
+	double p = 1.0;
+	int m = 1000;
+	int x = rgen.randomInt(m) + 1;
+
 	// loop over neighbours
 	for (int i = 0; i < 4; i++) {
 		double checkpos[2];
 		setPosNeighbour(checkpos, lastP->pos, i);
 		// if the neighbour is occupied...
-		if (readGrid(checkpos) == 1)
-			result = 1;
+		if (readGrid(checkpos) == 1) {
+			if ((double)x / m < p) {
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
+		}
+			
 	}
 	return result;
 }
