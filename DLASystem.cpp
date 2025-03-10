@@ -217,8 +217,8 @@ void DLASystem::moveLastParticle() {
 	else {
 		// if we get to here then we are trying to move to an occupied site
 		// (this should never happen as long as the sticking probability is 1.0)
-		cout << "reject " << rr << endl;
-		cout << lastP->pos[0] << " " << lastP->pos[1] << endl;
+		//cout << "reject " << rr << endl;
+		//cout << lastP->pos[0] << " " << lastP->pos[1] << endl;
 		//cout << newpos[0] << " " << newpos[1] << " " << (int)newpos[0] << endl;
 		//printOccupied();
 	}
@@ -229,8 +229,8 @@ int DLASystem::checkStick() {
 	Particle* lastP = particleList[numParticles - 1];
 	int result = 0;
 
-	double p = 1.0;
-	int m = 1000;
+	double p = 0.99;
+	int m = 10000;
 	int x = rgen.randomInt(m) + 1;
 
 	// loop over neighbours
@@ -239,14 +239,11 @@ int DLASystem::checkStick() {
 		setPosNeighbour(checkpos, lastP->pos, i);
 		// if the neighbour is occupied...
 		if (readGrid(checkpos) == 1) {
-			if ((double)x / m < p) {
+			if ((double)x / m <= p) {
 				result = 1;
+				break;
 			}
-			else {
-				result = 0;
-			}
-		}
-			
+		}			
 	}
 	return result;
 }
