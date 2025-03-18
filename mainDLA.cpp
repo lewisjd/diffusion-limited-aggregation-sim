@@ -73,7 +73,6 @@ void drawFuncs::introMessage() {
     cout << "  0 to print number of particles and cluster radius" << endl;
 }
 
-int simCount = 1;
 // openGL function deals with the keyboard
 void drawFuncs::handleKeypress(unsigned char key, int x, int y) {
     switch (key) {
@@ -93,8 +92,6 @@ void drawFuncs::handleKeypress(unsigned char key, int x, int y) {
         break;
     case 'g':
         cout << "go" << endl;
-        cout << "Simulation run #" << simCount << endl;
-        simCount++;
         sys->setRunning();
         glutTimerFunc(0, drawFuncs::update, 0);
         break;

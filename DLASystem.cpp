@@ -13,11 +13,30 @@ namespace colours {
 	GLfloat darkGrey[] = { 0.2, 0.2, 0.2, 1.0 };     // green
 }
 
-
+static int runCounter = 0;
+static int maxRuns = 5;
 // this function gets called every step,
 //   if there is an active particle then it gets moved,
 //   if not then add a particle
 void DLASystem::Update() {
+	// If have enough particles, that means "finished" this run:
+	if (numParticles >= endNum) {
+		runCounter++;
+		cout << "\n--- Run " << runCounter << " finished. ---" << endl;
+
+		// If haven't done all runs, reset and go again:
+		if (runCounter < maxRuns) {
+			Reset();
+			setRunning();  // automatically start again
+			return;
+		}
+		else {
+			cout << "All " << maxRuns << " runs completed!" << endl;
+			pauseRunning();
+			return;
+		}
+	}
+
 	if (lastParticleIsActive == 1)
 		moveLastParticle();
 	else if (numParticles < endNum) {
