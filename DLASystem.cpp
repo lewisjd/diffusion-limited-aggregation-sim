@@ -14,7 +14,7 @@ namespace colours {
 }
 
 static int runCounter = 0;
-static int maxRuns = 1000;
+static int maxRuns = 10;
 // this function gets called every step,
 //   if there is an active particle then it gets moved,
 //   if not then add a particle
@@ -25,6 +25,8 @@ void DLASystem::Update() {
 		if (logfile.is_open()) {
 			logfile << numParticles << " " << clusterRadius << endl;
 		}
+
+		performBoxCounting();
 
 		runCounter++;
 		cout << "\n--- Run " << runCounter << " finished. ---" << endl;
@@ -283,7 +285,7 @@ DLASystem::DLASystem(Window* set_win) {
 	cout << "creating system, gridSize " << gridSize << endl;
 	win = set_win;
 	numParticles = 0;
-	endNum = 3000;
+	endNum = 5000;
 
 	// allocate memory for the grid, remember to free the memory in destructor
 	grid = new int* [gridSize];
@@ -300,6 +302,7 @@ DLASystem::DLASystem(Window* set_win) {
 	// this opens a logfile, if we want to...
 	logfile.open("cluster_data.txt");
 	positionLog.open("positions_log.txt");
+	boxCountLog.open("box_counts.txt");
 
 }
 
@@ -319,6 +322,9 @@ DLASystem::~DLASystem() {
 
 	if (positionLog.is_open())
 		positionLog.close();
+
+	if (boxCountLog.is_open())
+		boxCountLog.close();
 
 }
 
@@ -368,4 +374,54 @@ void DLASystem::printClusterInfo() {
 	cout << "Cluster size (radius): " << clusterRadius << endl;
 }
 
+void DLASystem::performBoxCounting() {
+	if (!boxCountLog.is_open() || particleList.empty()) return;
 
+	const int halfGrid = gridSize / 2;  // 800
+	vector<pair<int, int>> scaledCoords;
+
+	// Collect and scale coordinates to 0-1600
+	for (Particle* p : particleList) {
+		int x = static_cast<int>(p->pos[0]) + halfGrid;
+		int y = static_cast<int>(p->pos[1]) + halfGrid;
+		scaledCoords.emplace_back(x, y);
+	}
+
+	// Determine maximum coordinate
+	int maxCoord = 0;
+	for (const auto& coord : scaledCoords) {
+		maxCoord = max(maxCoord, max(coord.first, coord.second));
+	}
+
+	// Calculate k (smallest integer where 2^k > maxCoord)
+	int k = static_cast<int>(ceil(log2(maxCoord + 1)));
+
+	//for (int m = 0; m <= k; ++m) {
+	//	int boxSize = 1 << m;  // 2^m
+	//	int mask = ((1 << k) - 1) ^ ((1 << m) - 1);  // Mask to zero last m bits
+
+	//	set<pair<int, int>> boxes;
+	//	for (const auto& coord : scaledCoords) {
+	//		int maskedX = coord.first & mask;
+	//		int maskedY = coord.second & mask;
+	//		boxes.insert({ maskedX, maskedY });
+	//	}
+	//	boxCountLog << boxSize << " " << boxes.size() << "\n";
+	//}
+	// Linear progression of box sizes from 1 to 100
+	for (int boxSize = 1; boxSize <= 50; ++boxSize) {
+		set<pair<int, int>> boxes;
+
+		// Iterate through all particles and assign them to boxes
+		for (const auto& coord : scaledCoords) {
+			int boxX = coord.first / boxSize;
+			int boxY = coord.second / boxSize;
+			boxes.insert({ boxX, boxY });
+		}
+
+		// Log the box size and the number of boxes
+		boxCountLog << boxSize << " " << boxes.size() << "\n";
+	}
+
+	boxCountLog << endl;
+}

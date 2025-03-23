@@ -64,7 +64,8 @@ private:
 
     ofstream positionLog;
 
-
+    ofstream boxCountLog;
+    void performBoxCounting();
 
 
 public:
