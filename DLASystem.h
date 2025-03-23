@@ -10,10 +10,13 @@
 #include <random>
 #include <string>
 #include <sstream>
+#include <set>
+#include <utility>
 
 #include "Window.h"
 #include "Particle.h"
 #include "rnd.h"
+
 
 using namespace std;
 
@@ -58,6 +61,10 @@ private:
     // the values of these variables are set in the constructor
     double addRatio;    // how much bigger the addCircle should be, compared to cluster radius
     double killRatio;   // how much bigger is the killCircle, compared to the addCircle
+
+    ofstream positionLog;
+
+
 
 
 public:
@@ -154,4 +161,5 @@ public:
 
     // print the number of number of particles followed by cluster size when user presses 0
     void printClusterInfo();
+
 };

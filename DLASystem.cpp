@@ -1,4 +1,4 @@
-//
+﻿//
 //  DLASystem.cpp
 //
 
@@ -14,13 +14,18 @@ namespace colours {
 }
 
 static int runCounter = 0;
-static int maxRuns = 5;
+static int maxRuns = 1000;
 // this function gets called every step,
 //   if there is an active particle then it gets moved,
 //   if not then add a particle
 void DLASystem::Update() {
 	// If have enough particles, that means "finished" this run:
 	if (numParticles >= endNum) {
+
+		if (logfile.is_open()) {
+			logfile << numParticles << " " << clusterRadius << endl;
+		}
+
 		runCounter++;
 		cout << "\n--- Run " << runCounter << " finished. ---" << endl;
 
@@ -32,6 +37,7 @@ void DLASystem::Update() {
 		}
 		else {
 			cout << "All " << maxRuns << " runs completed!" << endl;
+			cout << "\a";  // Beep sound
 			pauseRunning();
 			return;
 		}
@@ -43,6 +49,7 @@ void DLASystem::Update() {
 		addParticleOnAddCircle();
 		setParticleActive();
 	}
+
 	if (lastParticleIsActive == 0 || slowNotFast == 1)
 		glutPostRedisplay(); //Tell GLUT that the display has changed
 }
@@ -228,8 +235,11 @@ void DLASystem::moveLastParticle() {
 			setParticleInactive();  // make the particle inactive (stuck)
 			updateClusterRadius(lastP->pos);  // update the cluster radius, addCircle, etc.
 
-			if ((numParticles == 10 || numParticles % 100 == 0) && logfile.is_open()) {
+			if ((numParticles % 5 == 0) && logfile.is_open()) {
 				logfile << numParticles << " " << clusterRadius << endl;
+			}
+			if (positionLog.is_open()) {
+				positionLog << lastP->pos[0] << " " << lastP->pos[1] << "\n";
 			}
 		}
 	}
@@ -248,7 +258,7 @@ int DLASystem::checkStick() {
 	Particle* lastP = particleList[numParticles - 1];
 	int result = 0;
 
-	double p = 0.99;
+	double p = 1.0;
 	int m = 10000;
 	int x = rgen.randomInt(m) + 1;
 
@@ -273,7 +283,7 @@ DLASystem::DLASystem(Window* set_win) {
 	cout << "creating system, gridSize " << gridSize << endl;
 	win = set_win;
 	numParticles = 0;
-	endNum = 1000;
+	endNum = 3000;
 
 	// allocate memory for the grid, remember to free the memory in destructor
 	grid = new int* [gridSize];
@@ -289,6 +299,8 @@ DLASystem::DLASystem(Window* set_win) {
 
 	// this opens a logfile, if we want to...
 	logfile.open("cluster_data.txt");
+	positionLog.open("positions_log.txt");
+
 }
 
 // destructor
@@ -304,6 +316,10 @@ DLASystem::~DLASystem() {
 
 	if (logfile.is_open())
 		logfile.close();
+
+	if (positionLog.is_open())
+		positionLog.close();
+
 }
 
 
@@ -351,3 +367,5 @@ void DLASystem::printClusterInfo() {
 	cout << "Number of particles: " << numParticles << endl;
 	cout << "Cluster size (radius): " << clusterRadius << endl;
 }
+
+
